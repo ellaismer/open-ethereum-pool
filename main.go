@@ -11,10 +11,10 @@ import (
 
 	"github.com/yvasiyarov/gorelic"
 
-	"github.com/sammy007/open-ethereum-pool/api"
-	"github.com/sammy007/open-ethereum-pool/payouts"
-	"github.com/sammy007/open-ethereum-pool/proxy"
-	"github.com/sammy007/open-ethereum-pool/storage"
+	"github.com/feeleep75/open-ethereum-pool/api"
+	"github.com/feeleep75/open-ethereum-pool/payouts"
+	"github.com/feeleep75/open-ethereum-pool/proxy"
+	"github.com/feeleep75/open-ethereum-pool/storage"
 )
 
 var cfg proxy.Config
@@ -80,10 +80,11 @@ func main() {
 
 	startNewrelic()
 
-	backend = storage.NewRedisClient(&cfg.Redis, cfg.Coin)
+	backend = storage.NewRedisClient(&cfg.Redis, cfg.Coin, cfg.Pplns)
 	pong, err := backend.Check()
 	if err != nil {
 		log.Printf("Can't establish connection to backend: %v", err)
+        os.Exit(0)
 	} else {
 		log.Printf("Backend check reply: %v", pong)
 	}
