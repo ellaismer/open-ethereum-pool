@@ -1,12 +1,6 @@
-## Open Source Ethereum Classic Mining Pool
+## Open Source Ellaism Mining Pool
 
-![Miner's stats page](https://s22.postimg.io/4rb17sqfl/2016_08_27_12_13_25_Fotos.png)
-
-[![Join the chat at https://gitter.im/sammy007/open-ethereum-pool](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sammy007/open-ethereum-pool?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/sammy007/open-ethereum-pool.svg?branch=develop)](https://travis-ci.org/sammy007/open-ethereum-pool) [![Go Report Card](https://goreportcard.com/badge/github.com/feeleep75/open-ethereum-pool)](https://goreportcard.com/report/github.com/feeleep75/open-ethereum-pool)
-
-Pools running with this fork: [EthTeam.com](http://www.ethteam.com)
-
-[List Of Open Ethereum Pools](https://github.com/feeleep75/open-ethereum-pool/wiki/List-Of-Open-Pools)
+Consider mining in [Dev Pool](https://pool.ellaism.org) or [donate to Dev Fund](https://ellaism.org/donate/) if you like this fork.
 
 ### Features
 
@@ -22,7 +16,7 @@ Pools running with this fork: [EthTeam.com](http://www.ethteam.com)
 
 #### Proxies
 
-* [Ether-Proxy](https://github.com/feeleep75/ether-proxy) HTTP proxy with web interface
+* [Ether-Proxy](https://github.com/sammy007/ether-proxy) HTTP proxy with web interface
 * [Stratum Proxy](https://github.com/Atrides/eth-proxy) for Ethereum
 
 ### Building on Linux
@@ -41,7 +35,7 @@ First install  [go-ethereum](https://github.com/ethereum/go-ethereum/wiki/Instal
 
 Clone & compile:
 
-    git clone https://github.com/feeleep75/open-ethereum-pool.git
+    git clone https://github.com/sammy007/open-ethereum-pool.git
     cd open-ethereum-pool
     make
 
