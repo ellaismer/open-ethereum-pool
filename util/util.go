@@ -69,9 +69,3 @@ func MustParseDuration(s string) time.Duration {
 	}
 	return value
 }
-
-func String2Big(num string) *big.Int {
-	n := new(big.Int)
-	n.SetString(num, 0)
-	return n
-}
