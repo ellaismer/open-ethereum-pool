@@ -445,7 +445,7 @@ func (u *BlockUnlocker) unlockAndCreditMiners() {
 
 	log.Printf(
 		"MATURE SESSION: revenue %v, miners profit %v, pool profit: %v",
-		util.FormatRaweiTotReward(totalRevenue),
+		util.FormatRatReward(totalRevenue),
 		util.FormatRatReward(totalMinersProfit),
 		util.FormatRatReward(totalPoolProfit),
 	)
