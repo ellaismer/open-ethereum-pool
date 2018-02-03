@@ -8,11 +8,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/feeleep75/open-ethereum-pool/rpc"
-	"github.com/feeleep75/open-ethereum-pool/storage"
-	"github.com/feeleep75/open-ethereum-pool/util"
+	"github.com/sammy007/open-ethereum-pool/rpc"
+	"github.com/sammy007/open-ethereum-pool/storage"
+	"github.com/sammy007/open-ethereum-pool/util"
 )
 
 const txCheckInterval = 5 * time.Second
@@ -33,13 +33,13 @@ type PayoutsConfig struct {
 }
 
 func (self PayoutsConfig) GasHex() string {
-	x := util.String2Big(self.Gas)
-	return hexutil.EncodeBig(x)
+	x := common.String2Big(self.Gas)
+	return common.BigToHash(x).Hex()
 }
 
 func (self PayoutsConfig) GasPriceHex() string {
-	x := util.String2Big(self.Gas)
-	return hexutil.EncodeBig(x)
+	x := common.String2Big(self.GasPrice)
+	return common.BigToHash(x).Hex()
 }
 
 type PayoutsProcessor struct {
