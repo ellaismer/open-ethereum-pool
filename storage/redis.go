@@ -24,20 +24,7 @@ type RedisClient struct {
 	prefix string
 	pplns int64
 }
-type SumRewardData struct {
-	Interval       int64    `json:"inverval"`
-	Reward         int64    `json:"reward"`
-	Name           string   `json:"name"`
-	Offset         int64    `json:"offset"`
-}
-type RewardData struct {
-	Height	       int64    `json:"blockheight"`
-	Timestamp      int64    `json:"timestamp"`
-	BlockHash      string   `json:"blockhash"`
-	Reward         int64    `json:"reward"`
-	Percent        float64  `json:"percent"`
-	Immature       bool     `json:"immature"`
-}
+
 type BlockData struct {
 	Height         int64    `json:"height"`
 	Timestamp      int64    `json:"timestamp"`
@@ -340,15 +327,6 @@ func (r *RedisClient) GetImmatureBlocks(maxHeight int64) ([]*BlockData, error) {
 		return nil, cmd.Err()
 	}
 	return convertBlockResults(cmd), nil
-}
-
-func (r *RedisClient) GetRewards(login string) ([]*RewardData, error) {
-	option := redis.ZRangeByScore{Min: "0", Max: strconv.FormatInt(10, 10)}
-	cmd := r.client.ZRangeByScoreWithScores(r.formatKey("rewards", login), option)
-	if cmd.Err() != nil {
-		return nil, cmd.Err()
-	}
-	return convertRewardResults(cmd), nil
 }
 
 func (r *RedisClient) GetRoundShares(height int64, nonce string) (map[string]int64, error) {
@@ -806,9 +784,6 @@ func (r *RedisClient) CollectWorkersStats(sWindow, lWindow time.Duration, login 
 	cmds, err := tx.Exec(func() error {
 		tx.ZRemRangeByScore(r.formatKey("hashrate", login), "-inf", fmt.Sprint("(", now-largeWindow))
 		tx.ZRangeWithScores(r.formatKey("hashrate", login), 0, -1)
-		tx.LRange(r.formatKey("lastshares"), 0, r.pplns)
-		tx.ZRevRangeWithScores(r.formatKey("rewards", login), 0, 39)
-		tx.ZRevRangeWithScores(r.formatKey("rewards", login), 0, -1)
 		return nil
 	})
 
@@ -851,50 +826,12 @@ func (r *RedisClient) CollectWorkersStats(sWindow, lWindow time.Duration, login 
 		totalHashrate += worker.TotalHR
 		workers[id] = worker
 	}
-
-	shares := cmds[2].(*redis.StringSliceCmd).Val()
-
-	csh := 0
-	var myshares []string
-	for _, val := range shares {
-		text := "█"
-		if val != login {
-			text = "▁"
-		} else {
-			csh++
-		}
-		//myshares = append(myshares,  strconv.FormatInt(int64(ind) 10))
-		myshares = append(myshares,  text)
-	}
-	stats["roundShares"] = csh
-	stats["shares"] = myshares
 	stats["workers"] = workers
 	stats["workersTotal"] = len(workers)
 	stats["workersOnline"] = online
 	stats["workersOffline"] = offline
 	stats["hashrate"] = totalHashrate
 	stats["currentHashrate"] = currentHashrate
-
-	stats["rewards"] = convertRewardResults(cmds[3].(*redis.ZSliceCmd)) // last 40
-	rewards := convertRewardResults(cmds[4].(*redis.ZSliceCmd)) // all
-
-	var dorew []*SumRewardData
-	dorew = append(dorew, &SumRewardData{ Name: "Last 60 minutes", Interval: 3600, Offset: 0 })
-	dorew = append(dorew, &SumRewardData{ Name: "Last 12 hours", Interval: 3600 * 12, Offset: 0 })
-	dorew = append(dorew, &SumRewardData{ Name: "Last 24 hours", Interval: 3600 * 24, Offset: 0 })
-	dorew = append(dorew, &SumRewardData{ Name: "Last 7 days", Interval: 3600 * 24 * 7, Offset: 0 })
-	dorew = append(dorew, &SumRewardData{ Name: "Last 30 days", Interval: 3600 * 24 * 30, Offset: 0 })
-
-	for _, reward := range rewards {
-		for _, dore := range dorew {
-			dore.Reward += 0
-			if reward.Timestamp > now - dore.Interval {
-				dore.Reward += reward.Reward
-			}
-		}
-	}
-	stats["sumrewards"] = dorew
-	stats["24hreward"] = dorew[2].Reward
 	return stats, nil
 }
 
@@ -968,25 +905,6 @@ func convertCandidateResults(raw *redis.ZSliceCmd) []*BlockData {
 		block.TotalShares, _ = strconv.ParseInt(fields[5], 10, 64)
 		block.candidateKey = v.Member.(string)
 		result = append(result, &block)
-	}
-	return result
-}
-
-func convertRewardResults(rows ...*redis.ZSliceCmd) []*RewardData {
-	var result []*RewardData
-	for _, row := range rows {
-		for _, v := range row.Val() {
-			// "amount:percent:immature:block.Hash:block.height"
-			reward := RewardData{}
-			reward.Timestamp = int64(v.Score)
-			fields := strings.Split(v.Member.(string), ":")
-			reward.BlockHash = fields[3]
-			reward.Reward, _ = strconv.ParseInt(fields[0], 10, 64)
-			reward.Percent, _ =  strconv.ParseFloat(fields[1], 64)
-			reward.Immature, _ = strconv.ParseBool(fields[2])
-			reward.Height, _ = strconv.ParseInt(fields[4], 10, 64)
-			result = append(result, &reward)
-		}
 	}
 	return result
 }
