@@ -84,7 +84,6 @@ func main() {
 	pong, err := backend.Check()
 	if err != nil {
 		log.Printf("Can't establish connection to backend: %v", err)
-        os.Exit(0)
 	} else {
 		log.Printf("Backend check reply: %v", pong)
 	}
