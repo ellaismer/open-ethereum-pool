@@ -23,10 +23,10 @@ Consider mining in [Dev Pool](https://pool.ellaism.org) or [donate to Dev Fund](
 
 Dependencies:
 
-  * go >= 1.5
-  * geth
+  * go >= 1.6
+  * geth or parity
   * redis-server >= 2.8.0
-  * nodejs
+  * nodejs >= 4 LTS
   * nginx
 
 **I highly recommend to use Ubuntu 16.04 LTS.**
@@ -35,6 +35,7 @@ First install  [go-ethereum](https://github.com/ethereum/go-ethereum/wiki/Instal
 
 Clone & compile:
 
+    git config --global http.https://gopkg.in.followRedirects true
     git clone https://github.com/sammy007/open-ethereum-pool.git
     cd open-ethereum-pool
     make
@@ -49,7 +50,7 @@ You can use Ubuntu upstart - check for sample config in <code>upstart.conf</code
 
 ### Building Frontend
 
-Install nodejs. I suggest using LTS version >= 4.x from https://github.com/nodesource/distributions or from your Linux distribution.
+Install nodejs. I suggest using LTS version >= 4.x from https://github.com/nodesource/distributions or from your Linux distribution or simply install nodejs on Ubuntu Xenial 16.04.
 
 The frontend is a single-page Ember.js application that polls the pool API to render miner stats.
 
@@ -57,7 +58,7 @@ The frontend is a single-page Ember.js application that polls the pool API to re
 
 Change <code>ApiUrl: '//example.net/'</code> in <code>www/config/environment.js</code> to match your domain name. Also don't forget to adjust other options.
 
-    npm install -g ember-cli@2.4.3
+    npm install -g ember-cli@2.9.1
     npm install -g bower
     npm install
     bower install
@@ -315,4 +316,8 @@ Made by sammy007. Licensed under GPLv3.
 
 ### Donations
 
-Coming Soon: ethereum contract and p2sh script. Please contact subtly on gitter if you would like to donate.
+ETH/ETC: 0xb85150eb365e7df0941f0cf08235f987ba91506a
+
+![](https://cdn.pbrd.co/images/GP5tI1D.png)
+
+Highly appreciated.
